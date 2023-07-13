@@ -1,3 +1,4 @@
+import { typeOrmConfigAsync } from '../../typeorm.config';
 import { IConfig } from './config.interfaces';
 
 export function config(): IConfig {
@@ -10,11 +11,6 @@ export function config(): IConfig {
         time: parseInt(process.env.JWT_ACCESS_TIME!, 10),
       },
     },
-    db: {
-      host: process.env.DB_HOST!,
-      name: process.env.DB_NAME!,
-      user: process.env.DB_USER!,
-      password: process.env.DB_PASS!,
-    },
+    db: typeOrmConfigAsync,
   };
 }

@@ -1,3 +1,5 @@
+import { TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
+
 export interface IDb {
   host: string;
   user: string;
@@ -15,6 +17,6 @@ export interface IJwt {
 export interface IConfig {
   port: number;
   domain: string;
-  db: IDb;
+  db: TypeOrmModuleAsyncOptions;
   jwt: IJwt;
 }
