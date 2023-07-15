@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ConfigService } from '@nestjs/config';
-import { GetUserParams } from './dtos/getUser.dto';
+import { IdOrUsernameParam } from './dtos/getUser.dto';
 import { IUserResponse } from './user.interfaces';
 import { ResponseUserMapper } from './mappers/userResponse.mapper';
 import { UpdateUserDto } from './dtos/updateUser.dto';
@@ -20,7 +20,7 @@ export class UserController {
   }
   @Get('/:idOrUsername')
   public async findUser(
-    @Param() params: GetUserParams,
+    @Param() params: IdOrUsernameParam,
   ): Promise<IUserResponse> {
     const user = await this.userService.findOneByIdOrUsername(
       params.idOrUsername,
@@ -30,7 +30,7 @@ export class UserController {
 
   @Patch('/:idOrUsername')
   public async updateUsername(
-    @Param() params: GetUserParams,
+    @Param() params: IdOrUsernameParam,
     @Body() dto: UpdateUserDto,
   ): Promise<IUserResponse> {
     const user = await this.userService.updateUsername(
@@ -41,7 +41,7 @@ export class UserController {
   }
   @Patch('/password/:idOrUsername')
   public async updatePassword(
-    @Param() params: GetUserParams,
+    @Param() params: IdOrUsernameParam,
     @Body() dto: UpdatePassword,
   ): Promise<IUserResponse> {
     const user = await this.userService.updatePassword(
@@ -51,7 +51,7 @@ export class UserController {
     return ResponseUserMapper.map(user);
   }
   public async deleteUser(
-    @Param() params: GetUserParams,
+    @Param() params: IdOrUsernameParam,
     @Body() dto: PasswordDto,
   ): Promise<void> {
     await this.userService.delete(params.idOrUsername, dto);

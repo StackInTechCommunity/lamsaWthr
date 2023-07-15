@@ -10,11 +10,11 @@ import { User } from './entities/user.entity';
 import { IUser } from './user.interfaces';
 import { CommonService } from '../common/common.service';
 import { compare, hash } from 'bcrypt';
-import { isNull, isUndefined } from '@server/common/utils/validation.util';
+import { isNull, isUndefined } from '../common/utils/validation.util';
 import { UpdateUserDto } from './dtos/updateUser.dto';
 import { PasswordDto } from './dtos/password.dto';
 import { isNumber, isNumberString } from 'class-validator';
-import { SLUG_REGEX } from '@server/common/consts/regex.const';
+import { SLUG_REGEX } from '../common/consts/regex.const';
 import { UpdatePassword } from './dtos/updatePassword.dto';
 @Injectable()
 export class UserService {
@@ -45,7 +45,10 @@ export class UserService {
   }
 
   public async findOneById(id: number): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: { cities: true },
+    });
     this.commonService.checkEntityExistence(user, 'User');
     return user!;
   }
@@ -53,7 +56,12 @@ export class UserService {
     username: string,
     forAuth: boolean,
   ): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { username } });
+    const user = await this.userRepository.findOne({
+      where: { username },
+      relations: {
+        cities: true,
+      },
+    });
     this.commonService.checkEntityExistence(user, 'User');
     if (forAuth) {
       this.throwUnauthorizedException(user);

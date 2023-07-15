@@ -17,6 +17,7 @@ export interface IJwt {
 export interface IConfig {
   port: number;
   domain: string;
+  api_url: string;
   db: TypeOrmModuleAsyncOptions;
   jwt: IJwt;
 }
