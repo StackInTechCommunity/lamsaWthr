@@ -11,7 +11,7 @@ export default function Home() {
   const  user = authContext?.user
 
   useEffect(() => {
-    if (user == null) return router.push("/login");
+    if (user == null) return router.push("/main");
     else if(user != null) return router.push("/main");
   }, [user])
 
