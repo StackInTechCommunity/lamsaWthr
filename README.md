@@ -15,13 +15,13 @@
 For Install dependencies only for server use : 
 
 ```bash
-  pnpm recursive install <package> --filter server
+  pnpm add <package> --filter=server
 ```
 
 For Install dependencies only for web use : 
 
 ```bash
-  pnpm recursive install <package> --filter web
+  pnpm add <package> --filter=web
 ```
 
 
