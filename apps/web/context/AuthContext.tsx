@@ -38,7 +38,7 @@ export const AuthContextProvider = ({ children }: LoginProviderProps) => {
 
   return (
     <AuthContext.Provider value={{user}} >
-      {loading ? <Main/> : children}
+      {children}
     </AuthContext.Provider>
   );
 }
