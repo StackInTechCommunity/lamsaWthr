@@ -8,6 +8,7 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfigAsync } from '../typeorm.config';
 import { CommonModule } from './common/common.module';
+import { WeatherModule } from './weather/weather.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { CommonModule } from './common/common.module';
     TypeOrmModule.forRootAsync(typeOrmConfigAsync),
     UserModule,
     CommonModule,
+    WeatherModule,
   ],
   controllers: [AppController],
   providers: [AppService],

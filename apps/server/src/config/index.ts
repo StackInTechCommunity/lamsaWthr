@@ -5,6 +5,7 @@ export function config(): IConfig {
   return {
     port: parseInt(process.env.PORT!, 10),
     domain: process.env.DOMAIN!,
+    api_url: process.env.API_URL!,
     jwt: {
       access: {
         secret: process.env.JWT_SECRET!,
