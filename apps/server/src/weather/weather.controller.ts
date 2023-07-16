@@ -14,8 +14,9 @@ import { IdOrUsernameParam } from '../user/dtos/getUser.dto';
 import { UserCitiesMapper } from './mappers/userCities.mapper';
 import { cityDto } from './dtos/Weather.dto';
 import { cityIdParam } from './dtos/qyary.params';
-
-@Controller('weather')
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('weather')
+@Controller('api/weather')
 export class WeatherController {
   constructor(
     private readonly weatherService: WeatherService,

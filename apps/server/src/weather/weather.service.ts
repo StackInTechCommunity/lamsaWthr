@@ -32,7 +32,8 @@ export class WeatherService {
 
     if (!isUndefined(data) && !isUndefined(data.current_weather)) {
       return {
-        temperature: data.current_weather.temperature,
+        temperatureC: data.current_weather.temperature,
+        temperatureF: (data.current_weather.temperature * 9) / 5 + 32,
         windSpeed: data.current_weather.windspeed,
         isDay: data.current_weather.is_day,
       };

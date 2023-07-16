@@ -16,6 +16,7 @@ import { PasswordDto } from './dtos/password.dto';
 import { isNumber, isNumberString } from 'class-validator';
 import { SLUG_REGEX } from '../common/consts/regex.const';
 import { UpdatePassword } from './dtos/updatePassword.dto';
+import { NewUserDto } from './dtos/newUser.dto';
 @Injectable()
 export class UserService {
   constructor(
@@ -36,11 +37,12 @@ export class UserService {
       throw new ConflictException('Username already in use');
     }
   }
-  public async create(user: IUser) {
+  public async create(user: NewUserDto): Promise<User> {
     user.username = this.commonService.formatName(user.username);
     user.password = await hash(user.password, 10);
     const newUser = this.userRepository.create(user);
-    await this.commonService.saveEntity(this.userRepository, user, true);
+    await this.commonService.saveEntity(this.userRepository, newUser);
+    console.log(newUser);
     return newUser;
   }
 

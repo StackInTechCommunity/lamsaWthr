@@ -1,7 +1,8 @@
 import { IUser, IUserResponse } from '../../user/user.interfaces';
 
 export interface IWeather {
-  temperature: number;
+  temperatureC: number;
+  temperatureF: number;
   windSpeed: number;
   isDay: boolean;
 }
