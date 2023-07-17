@@ -80,18 +80,7 @@ export class UserService {
   }
 
   public async findOneByIdOrUsername(idOrUsername: string): Promise<User> {
-    if (isUUID(idOrUsername)) {
-      return this.findOneById(idOrUsername);
-    }
-
-    if (
-      idOrUsername.length < 3 ||
-      idOrUsername.length > 106 ||
-      !SLUG_REGEX.test(idOrUsername)
-    ) {
-      throw new BadRequestException('Invalid username');
-    }
-
+  
     return this.findOneById(idOrUsername);
   }
   public async updateUsername(
