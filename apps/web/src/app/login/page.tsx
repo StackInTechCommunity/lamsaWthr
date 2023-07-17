@@ -27,8 +27,26 @@ export default function Login() {
     if(error){
       return console.log(error)
     }
-    console.log(result)
-    return router.push("/main")
+    console.log(result?.user.uid)
+    try {
+      const response = await fetch(`http://localhost:5000/api/user/${result?.user.uid}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${result?.user.getIdToken()}`
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error('Error submitting the request.');
+      }
+  
+      return router.push("/main")
+  
+    } catch (error) {
+      console.error('Error:', error);
+    }
+   
   };
 
   const createAccount = () => {
@@ -37,7 +55,7 @@ export default function Login() {
 
  
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-[#3A3A3A]">
+    <main className="flex min-h-screen flex-col items-center  justify-center gap-5 p-24 bg-[#3A3A3A]">
     <p className=' text-white text-2xl'>Weathero</p>
     <div className=' h-80 w-80 bg-[#818080] rounded '>
       <form className=' flex flex-col justify-evenly h-full p-3  '>

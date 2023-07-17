@@ -11,7 +11,7 @@ const TemperatureSwitch = () => {
 
     return (
         <div className="flex items-center">
-            <span className={`${isCelsius ? 'mr-2' : 'mr-2'}`}>{isCelsius ? 'C°' : 'F°'}</span>
+            <span className={`${isCelsius ? 'mr-2' : 'mr-2'}   text-white`}>{isCelsius ? 'C°' : 'F°'}</span>
             <label htmlFor="toggle" className="flex items-center cursor-pointer">
                 <div className="relative">
                     <input
