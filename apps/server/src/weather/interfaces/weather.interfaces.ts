@@ -1,3 +1,4 @@
+import { UserSettings } from '../../user/entities/userSettings.entity';
 import { IUser, IUserResponse } from '../../user/user.interfaces';
 
 export interface IWeather {
@@ -8,7 +9,7 @@ export interface IWeather {
 }
 
 export interface ICity {
-  id: number;
+  id: string;
   name: string;
   longitude: string;
   latitude: string;
@@ -16,7 +17,12 @@ export interface ICity {
 }
 export interface IUserCities extends IUser {
   cities: ICity[];
+  settings: UserSettings;
+}
+export interface IUserSettings {
+  preferredUnit: string;
 }
 export interface IUserCitiesResponse extends IUserResponse {
   cities: ICity[];
+  settings: IUserSettings;
 }

@@ -43,13 +43,7 @@ export class WeatherService {
   }
 
   public async getUserWeather(idOrUsername: string) {
-    const user = await this.userRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.cities', 'city')
-      .where('user.id = :idOrUsername or user.username=:idOrUsername', {
-        idOrUsername,
-      })
-      .getOne();
+    const user = await this.userService.findOneByIdOrUsername(idOrUsername);
 
     this.commonService.checkEntityExistence(user, 'user');
     const newUser: IUserCities = user!;
@@ -63,9 +57,7 @@ export class WeatherService {
   }
   public async addWeather(idOrUsername: string, data: cityDto) {
     const user = await this.userService.findOneByIdOrUsername(idOrUsername);
-    console.log(data);
     this.commonService.checkEntityExistence(user, 'user');
-    console.log(data.longitude);
     const cityFromDb = await this.cityRepository.findOne({
       where: {
         latitude: data.latitude,
@@ -74,7 +66,6 @@ export class WeatherService {
     });
 
     if (isUndefined(cityFromDb) || isNull(cityFromDb)) {
-      console.log(cityFromDb);
       const city = this.cityRepository.create(data);
       await this.commonService.saveEntity(this.cityRepository, city);
       user.cities.push(city!);
@@ -96,7 +87,7 @@ export class WeatherService {
 
   public async updateUserCity(
     idOrUsername: string,
-    cityId: number,
+    cityId: string,
     data: cityDto,
   ) {
     console.log(cityId);
@@ -130,7 +121,7 @@ export class WeatherService {
     await this.commonService.saveEntity(this.userRepository, user);
     return await this.getUserWeather(idOrUsername);
   }
-  public async deleteUserCity(idOrUsername: string, cityId: number) {
+  public async deleteUserCity(idOrUsername: string, cityId: string) {
     const city = await this.cityRepository.findOne({
       where: { id: cityId },
     });

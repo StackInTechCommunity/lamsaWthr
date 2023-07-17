@@ -10,13 +10,14 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  PrimaryColumn,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 
 @Entity()
 export class City {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   name: string;

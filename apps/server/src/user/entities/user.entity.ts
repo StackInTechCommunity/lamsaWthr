@@ -8,12 +8,16 @@ import {
   UpdateDateColumn,
   ManyToMany,
   JoinTable,
+  PrimaryColumn,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
+import { UserSettings } from './userSettings.entity';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryColumn({ type: 'uuid' })
+  id: string;
 
   @Column({ unique: true })
   username: string;
@@ -25,7 +29,12 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
   @ManyToMany(() => City)
   @JoinTable()
   cities: City[];
+
+  @OneToOne(() => UserSettings)
+  @JoinColumn()
+  settings: UserSettings;
 }
