@@ -9,7 +9,7 @@ export default function Home() {
   const router = useRouter();
   const authContext = useAuthContext();
   const  user = authContext?.user
-
+  
   useEffect(() => {
     if (user == null) return router.push("/login");
     else if(user != null) return router.push("/main");

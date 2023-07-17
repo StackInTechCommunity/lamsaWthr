@@ -1,5 +1,5 @@
 "use client";
-import {useAuthContext } from 'apps/web/context/AuthContext';
+import { useAuthContext } from 'apps/web/context/AuthContext';
 import signOutFunction from 'apps/web/firebase/auth/signout';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -11,21 +11,39 @@ import Modal from 'react-modal';
 import Feed from '../../components/Feed';
 import TemperatureSwitch from '../../components/TemperatureSwitch';
 import useFetch from '../../customHook/useFetch';
+import { User } from '../../types/User';
+import { changeUserCity } from '../api/ChangeCity';
+import { customStyles } from '../styles/style';
+import { fetchUser } from '../api/FetchUser';
+import { localCities } from '../data/localData';
+import { addUserCity } from '../api/AddCity';
 
 export default function Main() {
   const authContext = useAuthContext();
   const user = authContext?.user
-  const [isChecked, setIsChecked] = useState(false);
-
-  const handleToggle = () => {
-    setIsChecked((prevState) => !prevState);
-  };
-
   const router = useRouter()
+  const [userWithlist, setUserWithlist] = useState<User>();
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [isCreated, setIsCreated] = useState(false);
+  const [isCelsius, setIsCelsius] = useState(false);
+  const [cityId, setCityId] = useState("");
 
+  
   useEffect(() => {
     if (user == null) return router.push("/");
   }, [user])
+
+  useEffect(() => {
+    const getList = async () => {
+      try {
+        const fetchedList = await fetchUser(user!.uid);
+        setUserWithlist(fetchedList);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getList();
+  }, []);
 
   const [states, setStates] = useState([
     { state: 'Adrar', number: 1, latitude: 27.8767, longitude: -0.2833 },
@@ -77,7 +95,7 @@ export default function Main() {
     { state: 'Ghardaïa', number: 47, latitude: 32.4890, longitude: 3.6788 },
     { state: 'Relizane', number: 48, latitude: 35.7361, longitude: 0.5558 },
   ]);
-  
+
 
   const logout = async () => {
     const { result, error } = await signOutFunction();
@@ -88,63 +106,44 @@ export default function Main() {
     console.log("Logout" + result)
   };
 
-  const addCity = async (name : string , longitude : string , latitude : string ) => {
-
-    try {
-      console.error(name + longitude + latitude);
-      const token = await user!.getIdToken() ;
-
-      const response = await fetch(`http://localhost:5000/api/weather/${user?.uid}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({name : name ,longitude : longitude , latitude : latitude }),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Error submitting the request.');
-      }
-
-      // should add id
-  
-    } catch (error) {
-      console.error('Error:', error);
-    }
+  const addCity = async (name: string, longitude: string, latitude: string) => {
+    const token = await user!.getIdToken()
+    const fetchedList = await addUserCity({ userId: user!.uid, token: token, name: name, latitude: latitude, longitude: longitude });
+    setUserWithlist(fetchedList);
   };
 
- 
-
-  // popup modal
-  const customStyles = {
-    content: {
-      top: '50%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
-      width: "50vw",
-    },
+  const changeCity = async (name: string, longitude: string, latitude: string) => {
+    const token = await user!.getIdToken()
+    const fetchedList = await changeUserCity({ userId: user!.uid, cityId: cityId, token: token, name: name, latitude: latitude, longitude: longitude });
+    setUserWithlist(fetchedList);
   };
 
-  let subtitle;
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const clickChanageCity = (data) => {
+    console.log('Data received from child:', data);
+    setCityId(data); 
+    openModal(false)
+  };
 
-  function openModal() {
+  const handleSwitch = (data) => {
+    console.log('Data received from child:', data);
+    setIsCelsius(data);
+  }
+  function openModal(isCreated : boolean) {
+    setIsCreated(isCreated)
     setIsOpen(true);
   }
-
-  // function afterOpenModal() {
-  //   // references are now sync'd and can be accessed.
-  //   subtitle.style.color = '#f00';
-  // }
 
   function closeModal() {
     setIsOpen(false);
   }
-
+  function SelectCity(city : localCities){
+    if(isCreated){
+      addCity(city.state, String(city.longitude), String(city.latitude))
+    }else {
+      changeCity(city.state, String(city.longitude), String(city.latitude))
+    }
+    closeModal()
+  }
   return (
     <main className="bg-[#3A3A3A] h-screen w-full">
       <Modal
@@ -156,15 +155,16 @@ export default function Main() {
       >
         <div className=' flex flex-wrap gap-2'>
 
-          {states.map((element)=>{
+          {states.map((element) => {
+           
             return (
               <button
-                onClick={()=> addCity(element.state , String(element.longitude) , String(element.latitude) )}
+                onClick={() => SelectCity(element)}
                 className='text-white bg-[#3A3A3A] p-1 px-3 rounded'
                 key={element.number}
-                >
-                  {element.number} {element.state}
-                </button>
+              >
+                {element.number} {element.state}
+              </button>
             );
           })}
         </div>
@@ -179,7 +179,8 @@ export default function Main() {
       />
       <section className='p-8 flex flex-col gap-y-2'>
         <p className='text-3xl font-bold  text-white'>Weather</p>
-        <div onClick={openModal} className=' flex gap-3 bg-[#C4FCB7] rounded p-1 cursor-pointer w-fit'>
+        <p className=' text-sm font-bold  text-white'>{user?.email}</p>
+        <div onClick={ ()=> openModal(true)} className=' flex gap-3 bg-[#C4FCB7] rounded p-1 cursor-pointer w-fit'>
           <p className=' text-black'>Select your city</p>
           <Image
             src="/plus.svg"
@@ -188,19 +189,15 @@ export default function Main() {
             alt="btn"
           />
         </div>
-        <TemperatureSwitch />
+        <TemperatureSwitch sendSwitchDataToParent={handleSwitch} />
       </section>
       <section className='p-8 flex flex-col gap-y-2'>
-        <Feed />
+        <Feed userWithlist={userWithlist} sendDataToParent={clickChanageCity} isCelsius={isCelsius} />
       </section>
 
     </main>
   )
 }
-
-// flex min-h-screen flex-col items-center justify-between p-24 bg-[#3A3A3A]
-// <button type="button" onClick={logout} className='rounded bg-[#C4FCB7] p-2 text-black'>Logout</button>
-
 
 
 
