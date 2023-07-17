@@ -92,7 +92,7 @@ export class UserService {
       throw new BadRequestException('Invalid username');
     }
 
-    return this.findOneByUsername(idOrUsername, false);
+    return this.findOneById(idOrUsername);
   }
   public async updateUsername(
     userId: string,
