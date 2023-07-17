@@ -1,7 +1,7 @@
 import { useState } from "react"
 
-type props = {name : string , temp : string}
-const WeatherBar = ({name , temp } : props ) => {
+type props = {name : string , temp : string , onClick}
+const WeatherBar = ({name , temp ,onClick} : props ) => {
 
 
     return (
@@ -14,6 +14,7 @@ const WeatherBar = ({name , temp } : props ) => {
              
                 <button
                     className="bg-[#C4FCB7] p-1 px-5 rounded cursor-pointer text-black"
+                    onClick={onClick}
                 >
                     Change city
                 </button>

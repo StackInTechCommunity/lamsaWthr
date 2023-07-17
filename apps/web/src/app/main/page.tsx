@@ -20,7 +20,7 @@ export default function Main() {
   const handleToggle = () => {
     setIsChecked((prevState) => !prevState);
   };
-  
+
   const router = useRouter()
 
   useEffect(() => {
@@ -114,6 +114,8 @@ export default function Main() {
     }
   };
 
+ 
+
   // popup modal
   const customStyles = {
     content: {
@@ -176,7 +178,7 @@ export default function Main() {
         className=' absolute top-10 right-10 bg-[#C4FCB7] p-1 rounded'
       />
       <section className='p-8 flex flex-col gap-y-2'>
-        <p className='text-3xl font-bold'>Weather</p>
+        <p className='text-3xl font-bold  text-white'>Weather</p>
         <div onClick={openModal} className=' flex gap-3 bg-[#C4FCB7] rounded p-1 cursor-pointer w-fit'>
           <p className=' text-black'>Select your city</p>
           <Image
