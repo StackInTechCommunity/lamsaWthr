@@ -5,7 +5,7 @@ import { PasswordDto } from './password.dto';
 
 export abstract class NewUserDto extends PasswordDto {
   @ApiProperty()
-  @IsUUID()
+  @IsString()
   public id: string;
   @ApiProperty()
   @IsString()

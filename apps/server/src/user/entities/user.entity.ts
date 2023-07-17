@@ -16,7 +16,7 @@ import { UserSettings } from './userSettings.entity';
 
 @Entity()
 export class User {
-  @PrimaryColumn({ type: 'uuid' })
+  @PrimaryColumn()
   id: string;
 
   @Column({ unique: true })
