@@ -1,11 +1,12 @@
 import { useState } from "react";
 
-const TemperatureSwitch = () => {
+const TemperatureSwitch = ({sendSwitchDataToParent}) => {
 
     const [isCelsius, setIsCelsius] = useState(true);
 
     const handleSwitch = () => {
         setIsCelsius(!isCelsius);
+        sendSwitchDataToParent(isCelsius)
     };
 
 
