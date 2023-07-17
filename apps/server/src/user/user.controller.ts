@@ -23,11 +23,11 @@ export class UserController {
   //   return 'Hello World!';
   // }
   @Get('/:idOrUsername')
-  public async findUser(@Param() params: IdOrUsernameParam): Promise<User> {
+  public async findUser(@Param() params: IdOrUsernameParam) {
     const user = await this.userService.findOneByIdOrUsername(
       params.idOrUsername,
     );
-    return user;
+    return ResponseUserMapper.map(user);
   }
 
   @Post()

@@ -1,7 +1,7 @@
 import { IUser, IUserResponse } from '../user.interfaces';
 
 export class ResponseUserMapper implements IUserResponse {
-  public id: number;
+  public id: string;
   public username: string;
   public createdAt: string;
   public updatedAt: string;

@@ -3,15 +3,16 @@ import {
   ICity,
   IUserCities,
   IUserCitiesResponse,
+  IUserSettings,
 } from '../interfaces/weather.interfaces';
 
 export class UserCitiesMapper implements IUserCitiesResponse {
-  public id: number;
+  public id: string;
   public username: string;
   public createdAt: string;
   public updatedAt: string;
   cities: ICity[];
-
+  settings: IUserSettings;
   constructor(values: IUserCitiesResponse) {
     Object.assign(this, values);
   }
@@ -23,6 +24,7 @@ export class UserCitiesMapper implements IUserCitiesResponse {
       createdAt: user.createdAt.toISOString(),
       updatedAt: user.updatedAt.toISOString(),
       cities: user.cities,
+      settings: user.settings,
     });
   }
 }

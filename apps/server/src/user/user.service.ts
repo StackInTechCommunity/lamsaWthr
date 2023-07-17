@@ -13,15 +13,18 @@ import { compare, hash } from 'bcrypt';
 import { isNull, isUndefined } from '../common/utils/validation.util';
 import { UpdateUserDto } from './dtos/updateUser.dto';
 import { PasswordDto } from './dtos/password.dto';
-import { isNumber, isNumberString } from 'class-validator';
+import { isNumber, isNumberString, isUUID } from 'class-validator';
 import { SLUG_REGEX } from '../common/consts/regex.const';
 import { UpdatePassword } from './dtos/updatePassword.dto';
 import { NewUserDto } from './dtos/newUser.dto';
+import { UserSettings } from './entities/userSettings.entity';
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(UserSettings)
+    private readonly settingsRepository: Repository<UserSettings>,
     private readonly commonService: CommonService,
   ) {}
   private throwUnauthorizedException(user: undefined | null | User): void {
@@ -41,15 +44,17 @@ export class UserService {
     user.username = this.commonService.formatName(user.username);
     user.password = await hash(user.password, 10);
     const newUser = this.userRepository.create(user);
+    const userSettings = this.settingsRepository.create();
+    await this.commonService.saveEntity(this.settingsRepository, userSettings);
+    newUser.settings = userSettings;
     await this.commonService.saveEntity(this.userRepository, newUser);
-    console.log(newUser);
     return newUser;
   }
 
-  public async findOneById(id: number): Promise<User> {
+  public async findOneById(id: string): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: { cities: true },
+      relations: { cities: true, settings: true },
     });
     this.commonService.checkEntityExistence(user, 'User');
     return user!;
@@ -62,6 +67,7 @@ export class UserService {
       where: { username },
       relations: {
         cities: true,
+        settings: true,
       },
     });
     this.commonService.checkEntityExistence(user, 'User');
@@ -74,8 +80,8 @@ export class UserService {
   }
 
   public async findOneByIdOrUsername(idOrUsername: string): Promise<User> {
-    if (isNumberString(idOrUsername)) {
-      return this.findOneById(parseInt(idOrUsername));
+    if (isUUID(idOrUsername)) {
+      return this.findOneById(idOrUsername);
     }
 
     if (

@@ -1,5 +1,5 @@
 export interface IUser {
-  id: number;
+  id: string;
   username: string;
   password: string;
   createdAt: Date;
@@ -7,7 +7,7 @@ export interface IUser {
 }
 
 export interface IUserResponse {
-  id: number;
+  id: string;
   username: string;
   createdAt: string;
   updatedAt: string;
