@@ -10,7 +10,10 @@ export default function Register() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
+
 
   
   const handleUsernameChange = (event : any) => {
@@ -22,15 +25,29 @@ export default function Register() {
   };
 
   const handleSignup = async (event :any) => {
-   
     event.preventDefault()
-    const { result, error } = await signUp(username, password);
-    
-    if(error){
-      return console.log(error)
-    }
-    console.log(result?.user.uid)
+   
     try {
+
+      if(username.length === 0){
+        setError("Username empty")
+        return 
+      }
+      if(password.length === 0){
+        setError("Password empty")
+        return 
+      }
+      setIsLoading(true)
+
+      const { result, error } = await signUp(username, password);
+      
+     
+      if (error) {
+        setIsLoading(false)
+        setError(String(error))
+        return console.log(error)
+      }
+    
       const response = await fetch("http://localhost:5000/api/user", {
         method: 'POST',
         headers: {
@@ -41,12 +58,14 @@ export default function Register() {
       });
   
       if (!response.ok) {
-        throw new Error('Error submitting the request.');
+        setError('Error submitting the request, try again')
       }
-  
+      setIsLoading(false)
       return router.push("/main")
   
     } catch (error) {
+      setIsLoading(false)
+      setError(String(error))
       console.error('Error:', error);
     }
   };
@@ -64,12 +83,15 @@ export default function Register() {
           
           <input type="password" placeholder='Password' value={password} onChange={handlePasswordChange}  className='p-2 rounded bg-[#D9D9D9]'/>
 
-          <button type="button"  onClick={handleSignup} className='rounded bg-[#C4FCB7] p-2 text-black'>sign up</button>
+          <button type="button"  onClick={handleSignup} className='rounded bg-[#C4FCB7] p-2 text-black'>{isLoading ? "Loading ..." : "sign up"}</button>
 
           
           <Link href="/"><p className=' text-center text-white cursor-pointer'  >Already have account?</p></Link>
         </form>
+        
         </div>
+        {error && <p className=' text-center text-red-500 cursor-pointer '  >{error}</p>
+          }
     </main>
   )
 }

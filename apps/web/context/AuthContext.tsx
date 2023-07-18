@@ -12,6 +12,7 @@ export interface AuthContextProps {
 
 export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 export const useAuthContext = (): AuthContextProps | undefined => useContext(AuthContext);
+import { useRouter } from 'next/router';
 
 interface LoginProviderProps {
   children: React.ReactNode
@@ -21,6 +22,7 @@ export const AuthContextProvider = ({ children }: LoginProviderProps) => {
 
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+ 
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -29,6 +31,7 @@ export const AuthContextProvider = ({ children }: LoginProviderProps) => {
         setUser(user);
       } else {
         setUser(null);
+       
       }
       setLoading(false);
     });
