@@ -106,7 +106,7 @@ export class WeatherService {
     });
     if (isUndefined(newCity) || isNull(newCity)) {
       newCity = this.cityRepository.create(data);
-      this.commonService.saveEntity(this.cityRepository, newCity);
+      await this.commonService.saveEntity(this.cityRepository, newCity);
     }
     user.cities = user.cities.map((city) => {
       if (
